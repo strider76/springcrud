@@ -1,2 +1,2 @@
-docker run --name mydb -e MYSQL_ROOT_PASSWORD=pass1234 -d -p 3307:3306 mysql:5.7.26
+docker run --name mydb -e MYSQL_ROOT_PASSWORD=pass1234 -e MYSQL_DATABASE=prueba -d -p 3307:3306 mysql:5.7.26
 docker run --name phpmyadmin -d --link mydb:db -p 8081:80 phpmyadmin/phpmyadmin
