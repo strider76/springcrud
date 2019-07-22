@@ -2,6 +2,7 @@ package com.spring.springcrud.controller;
 
 import com.spring.springcrud.dto.EmployeeDTO;
 import com.spring.springcrud.exceptions.EmployeeNotfoundException;
+import com.spring.springcrud.mapper.EmployeeMapper;
 import com.spring.springcrud.model.Employee;
 import com.spring.springcrud.service.EmployeeService;
 import org.springframework.data.domain.PageRequest;
@@ -17,27 +18,29 @@ public class EmployeeController {
 
 
     private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
-
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
         this.employeeService = employeeService;
+        this.employeeMapper = employeeMapper;
     }
 
 
     @GetMapping(value = "/all",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public List<Employee> getAll(@RequestParam(defaultValue = "0", required = false) Integer page,
+    public List<EmployeeDTO> getAll(@RequestParam(defaultValue = "0", required = false) Integer page,
                                  @RequestParam(defaultValue = "10", required = false) Integer size) {
-        return  this.employeeService.findAll(PageRequest.of(page,size));
+        return  employeeMapper.employeeDaoListToDto(this.employeeService.findAll(PageRequest.of(page,size)));
     }
 
     @GetMapping(value = "/{id}")
-    public Employee getById(@PathVariable("id") Long idEmployee) throws EmployeeNotfoundException {
-        return this.employeeService.findById(idEmployee);
+    public EmployeeDTO getById(@PathVariable("id") Long idEmployee) throws EmployeeNotfoundException {
+        return employeeMapper.employeeDaoToDto(this.employeeService.findById(idEmployee));
     }
 
     @PostMapping(value = "/add")
-    public Employee add(@RequestBody Employee employeeDTO) {
-        return this.employeeService.create(employeeDTO);
+    public EmployeeDTO add(@RequestBody Employee employeeDTO) {
+
+        return employeeMapper.employeeDaoToDto(this.employeeService.create(employeeDTO));
     }
 
     @PutMapping(value = "/{id}")
@@ -59,9 +62,9 @@ public class EmployeeController {
     }
 
     @GetMapping(value = "/withsalarybetween/{min}/{max}")
-    public List<Employee> countEmployeesMinSalary(@PathVariable("min") Double minSalary,
+    public List<EmployeeDTO> countEmployeesMinSalary(@PathVariable("min") Double minSalary,
                                         @PathVariable("max") Double maxSalary) {
-        return this.employeeService.findAllActivesWithSalaryBetween(minSalary, maxSalary);
+        return employeeMapper.employeeDaoListToDto(this.employeeService.findAllActivesWithSalaryBetween(minSalary, maxSalary));
     }
 
 

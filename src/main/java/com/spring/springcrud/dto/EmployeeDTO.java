@@ -23,7 +23,7 @@ public class EmployeeDTO {
     private Integer age;
     private double salary;
     @JsonIgnore
-    private Boolean activo;
+    private Boolean active;
 
 
 }
