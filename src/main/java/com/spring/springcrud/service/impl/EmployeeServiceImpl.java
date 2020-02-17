@@ -26,6 +26,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee create(Employee employeeData) {
+        employeeData.setActive(true);
         return this.employeeDAO.save(employeeData);
     }
 

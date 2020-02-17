@@ -26,7 +26,7 @@ public class EmployeeController {
     }
 
 
-    @GetMapping(value = "/all",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public List<EmployeeDTO> getAll(@RequestParam(defaultValue = "0", required = false) Integer page,
                                  @RequestParam(defaultValue = "10", required = false) Integer size) {
         return  employeeMapper.employeeDaoListToDto(this.employeeService.findAll(PageRequest.of(page,size)));
@@ -37,10 +37,12 @@ public class EmployeeController {
         return employeeMapper.employeeDaoToDto(this.employeeService.findById(idEmployee));
     }
 
-    @PostMapping(value = "/add")
-    public EmployeeDTO add(@RequestBody Employee employeeDTO) {
+    @PostMapping
+    public EmployeeDTO add(@RequestBody EmployeeDTO employeeDTO) {
 
-        return employeeMapper.employeeDaoToDto(this.employeeService.create(employeeDTO));
+        return employeeMapper.employeeDaoToDto(
+                this.employeeService.create(this.employeeMapper.employeeDtoToDao(employeeDTO))
+        );
     }
 
     @PutMapping(value = "/{id}")
